@@ -2,7 +2,7 @@ FROM php:7.3-fpm
 
 LABEL Sadao Yokoyama <sadaoyokoyama@live.com>
 
-RUN apt-get update && apt-get install -y -q build-essential openssl libssl-dev pkg-config wget git sysstat gnupg2 sqlite3 libpq-dev libsqlite3-dev zlib1g-dev libicu-dev g++ xz-utils python --no-install-recommends
+RUN apt-get update && apt-get install -y -q build-essential sudo openssl libssl-dev pkg-config wget git sysstat gnupg2 sqlite3 libpq-dev libsqlite3-dev zlib1g-dev libicu-dev g++ xz-utils python --no-install-recommends
 
 RUN mkdir -p /opt/node && cd /opt/node && \
     wget -q https://nodejs.org/dist/v8.9.3/node-v8.9.3.tar.gz && \

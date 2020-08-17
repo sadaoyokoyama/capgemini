@@ -16,3 +16,10 @@ use Illuminate\Http\Request;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::prefix('/accounts/{number}')->group(function () {
+    Route::get('/', 'Api\AccountController@show');
+    Route::post('/move', 'Api\AccountController@move');
+    Route::post('/movements', 'Api\AccountController@movements');
+    Route::post('/balance', 'Api\AccountController@balance');
+});

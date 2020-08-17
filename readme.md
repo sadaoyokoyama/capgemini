@@ -1,72 +1,55 @@
-<p align="center"><img src="https://res.cloudinary.com/dtfbvvkyp/image/upload/v1566331377/laravel-logolockup-cmyk-red.svg" width="400"></p>
+## Sobre o projeto
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/d/total.svg" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/v/stable.svg" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/license.svg" alt="License"></a>
-</p>
+Este projeto se trata de uma aplicação para consulta de saldo, depósito e saque de uma determinada conta. A aplicação foi dividita em duas partes, sendo a primeira uma API RESTFul e a segunda uma Simgle Page Application (SPA) que irá consumir a API.
 
-## About Laravel
+## Estrutura
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+#### 1 - API RESTFul
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+A API foi desenvolvida utilizando o Laravel Framework v5.8 e disponibiliza 5 endpoints para contulta/envio dos dados pelo SPA, sendo elas:
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+``GET /api/accounts/{number}/`` 
+- para buscar informações de uma conta.
 
-## Learning Laravel
+``POST /api/accounts/{number}/move``
+- Para realizar um saque ou depósito
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+``POST /api/accounts/{number}/movements``
+- Para consultar as movimentações realizadas em determinada conta.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+``POST /api/accounts/{number}/balance``
+- Para consultar o saldo de uma determinada conta.
 
-## Laravel Sponsors
+##### Controller
+Foi criado apenas um controller ``AccountController`` para implementar a lógica da aplicação.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+##### Resources
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[British Software Development](https://www.britishsoftware.co)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- [UserInsights](https://userinsights.com)
-- [Fragrantica](https://www.fragrantica.com)
-- [SOFTonSOFA](https://softonsofa.com/)
-- [User10](https://user10.com)
-- [Soumettre.fr](https://soumettre.fr/)
-- [CodeBrisk](https://codebrisk.com)
-- [1Forge](https://1forge.com)
-- [TECPRESSO](https://tecpresso.co.jp/)
-- [Runtime Converter](http://runtimeconverter.com/)
-- [WebL'Agence](https://weblagence.com/)
-- [Invoice Ninja](https://www.invoiceninja.com)
-- [iMi digital](https://www.imi-digital.de/)
-- [Earthlink](https://www.earthlink.ro/)
-- [Steadfast Collective](https://steadfastcollective.com/)
-- [We Are The Robots Inc.](https://watr.mx/)
-- [Understand.io](https://www.understand.io/)
-- [Abdel Elrafa](https://abdelelrafa.com)
-- [Hyper Host](https://hyper.host)
+Para auxiliar o controller, foi criado os resources ``AccountBalanceResource``, ``AccountMovementsResource`` e ``AccountShowResource`` mantendo neles a estrutura de dado que será retornada para a SPA.
 
-## Contributing
+##### Models, Migrations, Factories e Seeds
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Para os models foi criado apenas o ``Account`` e ``AccountMovement`` e suas respectivas migrations. Para acelerar o desenvolvimento, foi feito uso de factories e seeds para gerar dados fakes. Estes dados já se encontram na base sqlite em ``/database/database.sqlite``
 
-## Security Vulnerabilities
+#### 2 - Single Page Application (SPA)
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+A SPA foi desenvolvida utilizando a versão 2 do framework VueJS. Para resolver o problema proposto, foi criado tanto uma página inicial quanto um menu lateral para exibir as opções disponíveis: saldo, depósito e saque. Caso uma ação seja iniciada, a SPA é capaz de monitorar se o usuário já concluiu ou não, armazenando alguns dados no seu state. Para cada subetapas de uma ação foi criada uma página para manter o mais simples possível a utilização pelo usuário.
 
-## License
+O que difere entre cada ação é que na consulta do saldo é solicitado apenas o número da conta e sua senha, já no saque e depósito tem uma etapa a mais que é a solicitação do valor.
 
-The Laravel framework is open-source software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Para centralizar os dados e mantê-los íntegros, foi feita a utilização do vuex. Para isso, foi necessário apenas uma store, contendo os states, mutations, getters e actions. Quando o usuário inicia uma ação, é armazenada no state a ação (depósito, saque, saldo), se foi iniciada e finalizada. Quando o usuário informa o número da conta, a SPA faz uma requisição na API buscando dados da conta e seu titular e também armazena no state para ser utilizada nas etapas seguintes que são a solicitação do valor (saque e depósito) e a senha da conta.
+
+## Executando o projeto
+
+(assumindo que já tenha feito o clone..)
+
+Para executar a aplicação, primeiro faça o download do docker e docker-compose.
+
+Em seguida, insira um registro no arquivo ``/etc/hosts`` (se for no linux) com o ip ``172.17.0.1`` e a url ``app.capgemini.local``.
+
+Após a etapa anterior inicie os containers com o comando ``docker-compose up -d``.
+
+Pronto! A aplicação já estará rodando! =D
+
+Caso ocorra algum erro, crie os arquivos de log do nginx.
+

@@ -22,5 +22,11 @@
         "sass-loader": "^7.1.0",
         "vue": "^2.5.17",
         "vue-template-compiler": "^2.6.11"
+    },
+    "dependencies": {
+        "v-mask": "^2.2.3",
+        "v-money": "^0.8.1",
+        "vue-router": "^3.4.3",
+        "vuex": "^3.5.1"
     }
 }
