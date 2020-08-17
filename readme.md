@@ -53,3 +53,5 @@ Pronto! A aplicação já estará rodando! =D
 
 Caso ocorra algum erro, crie os arquivos de log do nginx.
 
+Obs.: a senha para todas as contas é 123123.
+
